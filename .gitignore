@@ -43,6 +43,9 @@ tsconfig.tsbuildinfo
 .env.development.local
 .env.test.local
 .env.production.local
+env.list
+env.docker
+
 
 # Optional eslint cache
 .eslintcache
