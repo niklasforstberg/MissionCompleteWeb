@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 export const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -34,30 +35,30 @@ apiClient.interceptors.response.use(
     if (error.response) {
       switch (error.response.status) {
         case 401:
-          // Handle unauthorized access
           localStorage.removeItem('jwt');
-          // You might want to redirect to login page here
+          toast.error('Session expired. Please login again.');
           break;
         case 403:
-          // Handle forbidden access
+          toast.error('You do not have permission to perform this action.');
           console.error('Forbidden access:', error.response.data);
           break;
         case 404:
-          // Handle not found
+          toast.error('The requested resource was not found.');
           console.error('Resource not found:', error.response.data);
           break;
         case 500:
-          // Handle server errors
+          toast.error('An unexpected server error occurred. Please try again later.');
           console.error('Server error:', error.response.data);
           break;
         default:
+          toast.error('An error occurred. Please try again.');
           console.error('API error:', error.response.data);
       }
     } else if (error.request) {
-      // Network error (no response received)
+      toast.error('Unable to connect to the server. Please check your internet connection.');
       console.error('Network error:', error.request);
     } else {
-      // Other errors
+      toast.error('An unexpected error occurred.');
       console.error('Error:', error.message);
     }
 
