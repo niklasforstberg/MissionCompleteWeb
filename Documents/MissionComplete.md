@@ -49,10 +49,27 @@ The Off-Season Challenge Tracking App enables coaches to assign challenges and w
 - Notifications for overdue challenges.
 - Summary reports to coaches.
 
-#### 2.2.5 Error Handling & Logging
-- Validation of input data.
-- Error logs for failed operations.
-- Logging of key actions (challenge creation, completion, etc.).
+#### 2.2.5 Error Handling & Notifications
+- **Global Error Handling:**
+  - Centralized error handling through Axios interceptors
+  - Automatic handling of common HTTP status codes (401, 403, 404, 500)
+  - Automatic JWT token removal on authentication failures
+  - Network error detection and handling
+  - Detailed error logging to console
+
+- **User Notifications:**
+  - Toast notifications for all error states using react-toastify
+  - User-friendly error messages:
+    - Session expiration notifications
+    - Permission denial alerts
+    - Network connectivity issues
+    - Server error notifications
+  - Configurable notification display:
+    - Top-right positioning
+    - 5-second auto-dismiss
+    - Progress bar
+    - Click-to-dismiss functionality
+    - Hover-to-pause feature
 
 ## 3. System Architecture
 ### 3.1 Tech Stack
@@ -61,6 +78,10 @@ The Off-Season Challenge Tracking App enables coaches to assign challenges and w
 - **Database:** SQL Server @10.0.0.201 (using Entity Framework Core)
 - **Hosting:** Docker
 - **Configuration:** User Secrets for development, Environment Variables for production
+- **Frontend:** 
+  - React + Tailwind CSS
+  - react-toastify for notifications
+  - Axios for API communication
 
 ### 3.2 Data Models
 #### 3.2.0 User
