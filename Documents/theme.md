@@ -2,53 +2,56 @@
 
 ## 1. Color Palette
 
-### **Primary Colors (Green Base)**
-- **Deep Forest Green** `#2C5F2D` - Used for primary buttons, headers, and key elements.
-- **Sage Green** `#A3B18A` - Used for secondary buttons, backgrounds, and subtle highlights.
+### **Primary Colors (Monochrome Base)**
+- **Rich Black** `#2D3436` - Used for primary text, headers, and key elements
+- **Medium Gray** `#636E72` - Used for secondary elements and subtle accents
+- **Vibrant Purple** `#6C5CE7` - Used for primary buttons and key interactive elements
 
-### **Secondary Colors (Neutrals & Metallics)**
-- **Charcoal** `#3A3A3A` - Used for text, borders, and dark mode backgrounds.
-- **Soft Beige** `#EAE0D5` - Used for background areas, card elements, and contrast.
-- **Gold Accent** `#C2A878` - Used sparingly for icons, highlights, and premium UI elements.
+### **Secondary Colors (Neutrals & Accents)**
+- **Off-White** `#F8F9FA` - Used for backgrounds and light mode
+- **Light Gray** `#DFE6E9` - Used for cards, borders, and subtle backgrounds
+- **Electric Blue** `#0984E3` - Used for success states and progress indicators
 
 ## 2. UI Usage Guide
 
 ### **Primary Elements**
-- **Headers & Key Sections:** Deep Forest Green `#2C5F2D`
-- **Primary Buttons:** Deep Forest Green `#2C5F2D` with Soft Beige `#EAE0D5` text
-- **Secondary Buttons:** Sage Green `#A3B18A` with Charcoal `#3A3A3A` text
+- **Headers & Key Sections:** Rich Black `#2D3436`
+- **Primary Buttons:** Vibrant Purple `#6C5CE7` with white text
+- **Secondary Buttons:** Medium Gray `#636E72` with white text
 
 ### **Backgrounds & Cards**
-- **Light Mode Background:** Soft Beige `#EAE0D5`
-- **Dark Mode Background:** Charcoal `#3A3A3A`
-- **Cards & Modals:** Sage Green `#A3B18A` with subtle shadows
+- **Light Mode Background:** Off-White `#F8F9FA`
+- **Dark Mode Background:** Rich Black `#2D3436`
+- **Cards & Modals:** White with Light Gray `#DFE6E9` borders
 
 ### **Text & Typography**
-- **Headings:** Deep Forest Green `#2C5F2D`
-- **Body Text:** Charcoal `#3A3A3A`
-- **Muted Text / Placeholders:** Soft Beige `#EAE0D5`
+- **Headings:** Rich Black `#2D3436`
+- **Body Text:** Rich Black `#2D3436` (80% opacity for lighter weight)
+- **Muted Text / Placeholders:** Medium Gray `#636E72`
 
 ### **Accents & Highlights**
-- **Active States & Hover Effects:** Darker shade of Deep Forest Green `#244E24`
-- **Success Messages:** Sage Green `#A3B18A`
-- **Warnings:** Gold Accent `#C2A878`
-- **Errors:** Deep Burgundy Red `#8B2F2F` (only when needed)
+- **Active States & Hover Effects:** Darker shade of Vibrant Purple `#5849d8`
+- **Success Messages:** Electric Blue `#0984E3`
+- **Warnings:** Warm Yellow `#FFC107`
+- **Errors:** Coral Red `#FF5252`
 
 ## 3. Typography Recommendations
-- **Font Family:** Use a modern, elegant sans-serif like *Inter*, *Lora*, or *Playfair Display*.
-- **Title Font Weight:** Bold (700)
+- **Font Family:** Use a clean sans-serif like *Inter* or *SF Pro Display*
+- **Title Font Weight:** Semi-bold (600)
 - **Body Font Weight:** Regular (400)
 - **Line Height:** 1.5 for readability
 
 ## 4. Design Principles
-- **Minimalist & Elegant:** Avoid excessive gradients or loud colors.
-- **Consistency:** Maintain uniform padding, margins, and shadow depths.
-- **Subtle Animations:** Use soft transitions for hover and active states.
+- **Clean & Minimal:** Focus on typography and spacing
+- **High Contrast:** Ensure excellent readability
+- **Strategic Color Use:** Purple accents only for important actions
+- **Whitespace:** Generous use of spacing for clarity
 
 ## 5. Implementation Notes
-- Define these colors as CSS variables or Tailwind theme extensions.
-- Ensure accessibility contrast for readability (AA or AAA compliance where possible).
-- Test colors in both light and dark mode settings.
+- Define these colors as CSS variables or Tailwind theme extensions
+- Ensure accessibility contrast (AAA compliance where possible)
+- Use opacity variations for hover states
+- Implement smooth transitions for all interactive elements
 
 ---
-This guide ensures a refined, premium look while maintaining usability. Let me know if you'd like any refinements! 🚀
+This minimal monochrome-plus theme provides a professional, clean look while using purple and blue accents strategically for emphasis and interaction.

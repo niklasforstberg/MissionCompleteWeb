@@ -6,10 +6,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'forest-green': '#2A4834',
-        'sage-green': '#87A878',
-        'soft-beige': '#F5F2ED',
-        'charcoal': '#333333',
+        'rich-black': '#2D3436',
+        'medium-gray': '#636E72',
+        'vibrant-purple': '#6C5CE7',
+        'off-white': '#F8F9FA',
+        'light-gray': '#DFE6E9',
+        'electric-blue': '#0984E3',
+        'error-red': '#FF5252',
+        'warning-yellow': '#FFC107',
       }
     },
   },
