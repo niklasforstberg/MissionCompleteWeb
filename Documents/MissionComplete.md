@@ -15,7 +15,7 @@ The Off-Season Challenge Tracking App enables coaches to assign challenges and w
 ## 2. Features & Functionalities
 
 ### 2.1 User Roles
-- **Coach:** Can create, assign, and track challenges for players and manage multiple teams.
+- **Coach:** Can create, assign, and track challenges for players and manage multiple teams. Cannot be a member of teams.
 - **Player:** Can view assigned challenges, mark them as completed, and view progress.
 - **Admin:** Manages user access and resolves issues.
 
@@ -23,11 +23,15 @@ The Off-Season Challenge Tracking App enables coaches to assign challenges and w
 #### 2.2.1 Authentication & User Management
 - User authentication via email/password or OAuth (Google, Facebook, etc.).
 - Role-based access control (RBAC) for different user types.
+- Self-service registration with role selection (Player/Coach).
+- Team invites automatically create Player accounts.
 - Password reset and account recovery.
 
 #### 2.2.2 Team & Challenge Management
-- Coaches can create and manage multiple teams.
+- Coaches can create and manage multiple teams but cannot be team members.
 - Each team has its own set of players and challenges.
+- Players can only be members of teams (cannot create/manage teams).
+- Team invites automatically set user role as Player.
 - Coaches create and assign challenges with:
   - Name (e.g., "Run 5K", "Shoot 100 free throws").
   - Type (Cardio, Strength, Skill-based, etc.).
@@ -49,27 +53,10 @@ The Off-Season Challenge Tracking App enables coaches to assign challenges and w
 - Notifications for overdue challenges.
 - Summary reports to coaches.
 
-#### 2.2.5 Error Handling & Notifications
-- **Global Error Handling:**
-  - Centralized error handling through Axios interceptors
-  - Automatic handling of common HTTP status codes (401, 403, 404, 500)
-  - Automatic JWT token removal on authentication failures
-  - Network error detection and handling
-  - Detailed error logging to console
-
-- **User Notifications:**
-  - Toast notifications for all error states using react-toastify
-  - User-friendly error messages:
-    - Session expiration notifications
-    - Permission denial alerts
-    - Network connectivity issues
-    - Server error notifications
-  - Configurable notification display:
-    - Top-right positioning
-    - 5-second auto-dismiss
-    - Progress bar
-    - Click-to-dismiss functionality
-    - Hover-to-pause feature
+#### 2.2.5 Error Handling & Logging
+- Validation of input data.
+- Error logs for failed operations.
+- Logging of key actions (challenge creation, completion, etc.).
 
 ## 3. System Architecture
 ### 3.1 Tech Stack
@@ -78,10 +65,6 @@ The Off-Season Challenge Tracking App enables coaches to assign challenges and w
 - **Database:** SQL Server @10.0.0.201 (using Entity Framework Core)
 - **Hosting:** Docker
 - **Configuration:** User Secrets for development, Environment Variables for production
-- **Frontend:** 
-  - React + Tailwind CSS
-  - react-toastify for notifications
-  - Axios for API communication
 
 ### 3.2 Data Models
 #### 3.2.0 User
@@ -91,6 +74,7 @@ The Off-Season Challenge Tracking App enables coaches to assign challenges and w
   - PasswordHash: Hashed password using BCrypt
   - Role: Enum (Player, Coach, Admin)
   - CreatedAt: Timestamp of user creation
+  - IsInvitedUser: Boolean indicating if user was created through team invite
 
 #### 3.2.1 Team
 - **Properties:**
