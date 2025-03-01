@@ -1,6 +1,9 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
+// Log the full URL being used
+console.log('API URL:', import.meta.env.VITE_API_URL);
+
 export const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: {
@@ -8,9 +11,10 @@ export const apiClient = axios.create({
   },
 });
 
-// Request interceptor
+// Add request interceptor logging
 apiClient.interceptors.request.use(
   (config) => {
+    console.log('Full request URL:', `${config.baseURL || ''}${config.url}`);
     const token = localStorage.getItem('jwt');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
