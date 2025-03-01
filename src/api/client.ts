@@ -2,7 +2,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 // Log the full URL being used
-console.log('API URL:', import.meta.env.VITE_API_URL);
+console.log('API URL from env:', import.meta.env.VITE_API_URL);
 
 export const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -14,7 +14,11 @@ export const apiClient = axios.create({
 // Add request interceptor logging
 apiClient.interceptors.request.use(
   (config) => {
-    console.log('Full request URL:', `${config.baseURL || ''}${config.url}`);
+    const fullUrl = `${config.baseURL || ''}${config.url}`;
+    console.log('Sending request to:', fullUrl);
+    console.log('Request method:', config.method);
+    console.log('Request headers:', config.headers);
+    
     const token = localStorage.getItem('jwt');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
