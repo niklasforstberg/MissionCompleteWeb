@@ -22,4 +22,25 @@ export interface Challenge {
   endDate: string;
   createdAt: string;
   teamId: string;
+}
+
+export interface TeamMember {
+  id: number;
+  email: string;
+  joinedAt: string;
+}
+
+export interface TeamDetails {
+  id: number;
+  name: string;
+  description?: string;
+  players: TeamMember[];
+  coaches: TeamMember[];
+}
+
+export interface TeamSummary {
+  id: number;
+  name: string;
+  description?: string;
+  playerCount: number;
 } 
