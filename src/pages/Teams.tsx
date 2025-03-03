@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { teamsApi } from '../api/teams';
-import { TeamSummary, TeamDetails } from '../types';
+import { TeamSummary } from '../types';
 import { FiEdit2, FiX } from 'react-icons/fi';
-import { useCurrentUser } from '../hooks/useCurrentUser';
 
 export default function Teams() {
   const queryClient = useQueryClient();
@@ -11,7 +10,6 @@ export default function Teams() {
   const [editingTeamId, setEditingTeamId] = useState<number | null>(null);
   const [newTeamData, setNewTeamData] = useState({ name: '', description: '' });
   const [newPlayerEmail, setNewPlayerEmail] = useState('');
-  const { data: currentUser } = useCurrentUser();
 
   // Fetch all teams
   const { data: teams, isLoading: isLoadingTeams } = useQuery<TeamSummary[]>({
