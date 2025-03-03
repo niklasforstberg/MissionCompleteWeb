@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { apiClient } from '../api/client';
+import { authApi } from '../api/auth';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -13,12 +13,7 @@ export default function Login() {
     setError('');
     
     try {
-      const response = await apiClient.post('/auth/login', {
-        email,
-        password,
-      });
-      
-      const { token } = response.data;
+      const { token } = await authApi.login({ email, password });
       localStorage.setItem('jwt', token);
       navigate('/');
     } catch (err) {

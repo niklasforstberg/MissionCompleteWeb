@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { apiClient } from '../api/client';
+import { authApi } from '../api/auth';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -22,13 +22,13 @@ export default function Signup() {
 
     setIsLoading(true);
     try {
-      const response = await apiClient.post('/auth/register', {
+      const { token } = await authApi.register({
         email: formData.email,
         password: formData.password,
         isCoach: formData.role === 'Coach'
       });
 
-      localStorage.setItem('jwt', response.data.token);
+      localStorage.setItem('jwt', token);
       toast.success('Registration successful!');
       navigate('/');
     } catch (error) {

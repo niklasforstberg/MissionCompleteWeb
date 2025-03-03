@@ -25,17 +25,18 @@ export interface Challenge {
 }
 
 export interface TeamMember {
-  id: number;
+  userId: number;
   email: string;
+  role: string;
   joinedAt: string;
 }
 
 export interface TeamDetails {
   id: number;
   name: string;
-  description?: string;
-  players: TeamMember[];
-  coaches: TeamMember[];
+  description: string;
+  createdAt: string;
+  members: TeamMember[];
 }
 
 export interface TeamSummary {

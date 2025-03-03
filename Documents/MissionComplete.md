@@ -40,6 +40,17 @@ The Off-Season Challenge Tracking App enables coaches to assign challenges and w
   - Notes or instructions.
 - Players view assigned challenges and log completions.
 
+- Team Management Features:
+  - Coaches can add/remove players using their email addresses
+  - Players can be added directly from the team card interface
+  - Each team card displays:
+    - Team name and description
+    - Number of players
+    - List of current players with remove option
+    - Interface to add new players
+  - Teams can have multiple coaches and players
+  - Players can be removed from teams at any time
+
 #### 2.2.3 Progress Tracking
 - **Matrix-style visualization:**
   - Players listed on one axis, time on the other.

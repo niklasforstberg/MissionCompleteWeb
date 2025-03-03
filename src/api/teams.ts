@@ -17,8 +17,11 @@ export const teamsApi = {
     return response.data;
   },
 
-  addTeamMember: async (teamId: number, data: { userId: number; role: 'Player' | 'Coach' }) => {
-    const response = await apiClient.post(`/teams/${teamId}/members`, data);
+  addTeamMember: async (teamId: number, data: { email: string }) => {
+    const response = await apiClient.post(`/teams/${teamId}/members`, {
+      email: data.email,
+      isCoach: false
+    });
     return response.data;
   },
 
