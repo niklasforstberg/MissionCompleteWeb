@@ -20,9 +20,12 @@ export default function Teams() {
   // Fetch details for each team
   const teamsDetails = useQuery({
     queryKey: ['teamsDetails', teams?.map(t => t.id)],
-    queryFn: () => Promise.all(
-      (teams || []).map(team => teamsApi.getTeamDetails(team.id))
-    ),
+    queryFn: async () => {
+      if (!teams || teams.length === 0) return [];  // Return empty array if no teams
+      return Promise.all(
+        teams.map(team => teamsApi.getTeamDetails(team.id))
+      );
+    },
     enabled: !!teams?.length,
   });
 
