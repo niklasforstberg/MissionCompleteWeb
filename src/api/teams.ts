@@ -3,7 +3,7 @@ import { TeamDetails, TeamSummary } from '../types';
 
 export const teamsApi = {
   getTeams: async (): Promise<TeamSummary[]> => {
-    const response = await apiClient.get('/teams');
+    const response = await apiClient.get('/user/teams');
     return response.data;
   },
 
