@@ -20,6 +20,12 @@ export const authApi = {
     const response = await apiClient.post('/auth/register', data);
     return response.data;
   },
+
+  setPassword: async (data: { password: string }) => {
+    const response = await apiClient.post('/auth/set-password', data);
+    return response.data;
+  },
+
   // Other auth-related API calls can be added here later
   // like login, logout, register, etc.
 }; 

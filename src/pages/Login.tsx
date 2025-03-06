@@ -3,19 +3,53 @@ import { useNavigate } from 'react-router-dom';
 import { authApi } from '../api/auth';
 
 export default function Login() {
+  console.log('Rendering Login page');
+  
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isSettingPassword, setIsSettingPassword] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    
+    try {
+      await authApi.login({ email, password: '' });
+      setShowPassword(true);
+    } catch (err: any) {
+      if (err.response?.status === 400 && err.response?.data?.requiresPasswordSet) {
+        setIsSettingPassword(true);
+        setShowPassword(true);
+        setError('Please set your password to continue');
+      } else {
+        setError('Invalid email address');
+      }
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     
     try {
-      const { token } = await authApi.login({ email, password });
-      localStorage.setItem('jwt', token);
-      navigate('/');
+      if (isSettingPassword) {
+        if (password !== confirmPassword) {
+          setError('Passwords do not match');
+          return;
+        }
+        await authApi.setPassword({ password });
+        const { token } = await authApi.login({ email, password });
+        localStorage.setItem('jwt', token);
+        navigate('/');
+      } else {
+        const { token } = await authApi.login({ email, password });
+        localStorage.setItem('jwt', token);
+        navigate('/');
+      }
     } catch (err) {
       setError('Invalid email or password');
     }
@@ -41,7 +75,7 @@ export default function Login() {
           </div>
         )}
         
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={showPassword ? handleSubmit : handleEmailSubmit} className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-rich-black font-medium mb-2">
               Email
@@ -56,25 +90,45 @@ export default function Login() {
             />
           </div>
           
-          <div>
-            <label htmlFor="password" className="block text-rich-black font-medium mb-2">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 border border-light-gray rounded-lg focus:outline-none focus:ring-2 focus:ring-vibrant-purple focus:border-transparent transition-all"
-              required
-            />
-          </div>
+          {showPassword && (
+            <>
+              <div>
+                <label htmlFor="password" className="block text-rich-black font-medium mb-2">
+                  {isSettingPassword ? 'Set New Password' : 'Password'}
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full p-3 border border-light-gray rounded-lg focus:outline-none focus:ring-2 focus:ring-vibrant-purple focus:border-transparent transition-all"
+                  required
+                />
+              </div>
+
+              {isSettingPassword && (
+                <div>
+                  <label htmlFor="confirmPassword" className="block text-rich-black font-medium mb-2">
+                    Confirm Password
+                  </label>
+                  <input
+                    id="confirmPassword"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full p-3 border border-light-gray rounded-lg focus:outline-none focus:ring-2 focus:ring-vibrant-purple focus:border-transparent transition-all"
+                    required
+                  />
+                </div>
+              )}
+            </>
+          )}
           
           <button
             type="submit"
             className="w-full bg-vibrant-purple text-white py-3 px-4 rounded-lg hover:bg-vibrant-purple/90 transition-all font-medium shadow-sm hover:shadow-md"
           >
-            Sign In
+            {!showPassword ? 'Next' : isSettingPassword ? 'Set Password & Sign In' : 'Sign In'}
           </button>
         </form>
 
