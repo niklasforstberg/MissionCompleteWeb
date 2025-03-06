@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { challengesApi } from '../api/challenges';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { teamsApi } from '../api/teams';
 import { TeamSummary } from '../types';
 
@@ -30,6 +30,12 @@ export default function Challenges() {
     endDate: '',
     teamId: 0
   });
+
+  // Add state for editing
+  const [editingChallengeId, setEditingChallengeId] = useState<number | null>(null);
+
+  // Add state for delete confirmation
+  const [deletingChallengeId, setDeletingChallengeId] = useState<number | null>(null);
 
   // Fetch challenges created by current user
   const { data: challenges, isLoading } = useQuery({
@@ -60,6 +66,23 @@ export default function Challenges() {
     },
   });
 
+  // Update edit mutation
+  const editChallengeMutation = useMutation({
+    mutationFn: (data: any) => challengesApi.updateChallenge(editingChallengeId!, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['myChallenges'] });
+      handleCloseModal();  // Use handleCloseModal instead of separate state updates
+    },
+  });
+
+  // Add delete mutation
+  const deleteChallengeMutation = useMutation({
+    mutationFn: challengesApi.deleteChallenge,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['myChallenges'] });
+    },
+  });
+
   const renderChallenge = (challenge: any) => (
     <div 
       key={challenge.id} 
@@ -82,12 +105,14 @@ export default function Challenges() {
       </div>
       <div className="flex gap-2">
         <button 
+          onClick={() => handleEdit(challenge)}
           className="p-2 text-forest-green hover:text-opacity-80"
           title="Edit challenge"
         >
           <FiEdit2 size={18} />
         </button>
         <button 
+          onClick={() => setDeletingChallengeId(challenge.id)}
           className="p-2 text-red-600 hover:text-opacity-80"
           title="Delete challenge"
         >
@@ -97,15 +122,70 @@ export default function Challenges() {
     </div>
   );
 
-  const handleCreateChallenge = (e: React.FormEvent) => {
+  // Update handleSubmit to wait for mutation
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const formattedData = {
       ...newChallengeData,
       startDate: new Date(newChallengeData.startDate).toISOString(),
       endDate: new Date(newChallengeData.endDate).toISOString(),
     };
-    createChallengeMutation.mutate(formattedData);
+    
+    if (editingChallengeId) {
+      editChallengeMutation.mutate(formattedData);
+    } else {
+      createChallengeMutation.mutate(formattedData);
+    }
   };
+
+  // Update handleEdit function
+  const handleEdit = (challenge: any) => {
+    setEditingChallengeId(challenge.id);
+    setNewChallengeData({
+      name: challenge.name,
+      description: challenge.description || '',
+      type: challenge.type,
+      frequency: challenge.frequency,
+      startDate: new Date(challenge.startDate).toISOString().split('T')[0],
+      endDate: new Date(challenge.endDate).toISOString().split('T')[0],
+      teamId: challenge.teamId
+    });
+    setIsCreateModalOpen(true);
+  };
+
+  // Add this function to handle modal closing
+  const handleCloseModal = () => {
+    setIsCreateModalOpen(false);
+    setEditingChallengeId(null);
+    setNewChallengeData({
+      name: '',
+      description: '',
+      type: ChallengeType.Cardio,
+      frequency: ChallengeFrequency.Daily,
+      startDate: '',
+      endDate: '',
+      teamId: 0
+    });
+  };
+
+  // Add modalRef
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  // Add click outside handler
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        handleCloseModal();
+      }
+    }
+
+    if (isCreateModalOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isCreateModalOpen]);
 
   if (isLoading) {
     return <div className="flex justify-center p-8">Loading challenges...</div>;
@@ -136,9 +216,11 @@ export default function Challenges() {
       {/* Create Challenge Modal */}
       {isCreateModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">Create New Challenge</h2>
-            <form onSubmit={handleCreateChallenge} className="space-y-4">
+          <div ref={modalRef} className="bg-white p-6 rounded-lg w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">
+              {editingChallengeId ? 'Edit Challenge' : 'Create New Challenge'}
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-rich-black mb-1">
                   Challenge Name
@@ -251,7 +333,7 @@ export default function Challenges() {
               <div className="flex justify-end gap-2">
                 <button
                   type="button"
-                  onClick={() => setIsCreateModalOpen(false)}
+                  onClick={handleCloseModal}
                   className="px-4 py-2 text-charcoal hover:text-rich-black"
                 >
                   Cancel
@@ -260,10 +342,37 @@ export default function Challenges() {
                   type="submit"
                   className="px-4 py-2 bg-vibrant-purple text-white rounded-lg hover:bg-vibrant-purple/90 transition-colors"
                 >
-                  Create Challenge
+                  {editingChallengeId ? 'Save Changes' : 'Create Challenge'}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Modal */}
+      {deletingChallengeId && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">Delete Challenge</h2>
+            <p className="text-charcoal mb-6">Are you sure you want to delete this challenge?</p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setDeletingChallengeId(null)}
+                className="px-4 py-2 text-charcoal hover:text-rich-black"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  deleteChallengeMutation.mutate(deletingChallengeId);
+                  setDeletingChallengeId(null);
+                }}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       )}
