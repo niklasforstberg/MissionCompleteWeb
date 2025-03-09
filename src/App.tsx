@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Signup from './pages/Signup';
 import Account from './pages/Account';
 import { useAuth } from './hooks/useAuth';
+import Welcome from './pages/Welcome';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,6 +32,7 @@ function AppRoutes() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/welcome" element={<Welcome />} />
         <Route
           path="/"
           element={

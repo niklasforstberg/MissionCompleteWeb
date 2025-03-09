@@ -26,6 +26,13 @@ export const authApi = {
     return response.data;
   },
 
+  setInitialPassword: async (data: { token: string; password: string }) => {
+    const response = await apiClient.post('/auth/set-password', {
+      password: data.password
+    });
+    return response.data;
+  },
+
   // Other auth-related API calls can be added here later
   // like login, logout, register, etc.
 }; 
