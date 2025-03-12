@@ -4,6 +4,12 @@ import { teamsApi } from '../api/teams';
 import { TeamSummary } from '../types';
 import { FiEdit2, FiX } from 'react-icons/fi';
 
+interface TeamResponse {
+  id: number;
+  name: string;
+  description?: string;
+}
+
 export default function Teams() {
   const queryClient = useQueryClient();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -12,14 +18,14 @@ export default function Teams() {
   const [newPlayerEmail, setNewPlayerEmail] = useState('');
 
   // Fetch all teams
-  const { data: teams, isLoading: isLoadingTeams } = useQuery<TeamSummary[]>({
+  const { data: teams, isLoading: isLoadingTeams } = useQuery<TeamResponse[]>({
     queryKey: ['teams'],
     queryFn: teamsApi.getTeams,
   });
 
   // Fetch details for each team
   const teamsDetails = useQuery({
-    queryKey: ['teamsDetails', teams?.map(t => t.id)],
+    queryKey: ['TeamDetails', teams?.map(t => t.id)],
     queryFn: async () => {
       if (!teams || teams.length === 0) return [];  // Return empty array if no teams
       return Promise.all(
@@ -45,8 +51,8 @@ export default function Teams() {
     onSuccess: () => {
       // Reset input and refresh both queries
       setNewPlayerEmail('');
-      queryClient.invalidateQueries({ queryKey: ['teams'] }); // Gets fresh summary
-      queryClient.invalidateQueries({ queryKey: ['teamsDetails'] }); // Gets fresh details
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
+      queryClient.invalidateQueries({ queryKey: ['TeamDetails'] });
     },
   });
 
@@ -85,7 +91,7 @@ export default function Teams() {
     }
   };
 
-  const renderTeamCard = (team: TeamSummary) => {
+  const renderTeamCard = (team: TeamResponse) => {
     const isEditing = editingTeamId === team.id;
     const teamDetails = teamsDetails.data?.find(t => t.id === team.id);
 
@@ -98,7 +104,7 @@ export default function Teams() {
               onClick={() => setEditingTeamId(null)}
               className="text-medium-gray hover:text-rich-black"
             >
-              Cancel
+              Done
             </button>
           </div>
           {teamDetails.description && (
@@ -138,24 +144,22 @@ export default function Teams() {
               <p className="text-medium-gray italic">No players yet</p>
             ) : (
               <div className="space-y-2">
-                {teamDetails.members
-                  .filter(member => member.role === 'Player')
-                  .map((player) => (
-                    <div
-                      key={player.userId}
-                      className="flex justify-between items-center p-2 bg-gray-50 rounded-lg"
+                {teamDetails.members.map((player) => (
+                  <div
+                    key={player.userId}
+                    className="flex justify-between items-center p-2 bg-gray-50 rounded-lg"
+                  >
+                    <span className="text-rich-black">{player.email}</span>
+                    <button
+                      onClick={() => handleRemovePlayer(player.userId)}
+                      className="text-medium-gray hover:text-red-500 p-1"
+                      title="Remove player"
+                      disabled={removePlayerMutation.isPending}
                     >
-                      <span className="text-rich-black">{player.email}</span>
-                      <button
-                        onClick={() => handleRemovePlayer(player.userId)}
-                        className="text-medium-gray hover:text-red-500 p-1"
-                        title="Remove player"
-                        disabled={removePlayerMutation.isPending}
-                      >
-                        <FiX size={18} />
-                      </button>
-                    </div>
-                  ))}
+                      <FiX size={18} />
+                    </button>
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -179,7 +183,7 @@ export default function Teams() {
         {team.description && (
           <p className="text-medium-gray mb-4">{team.description}</p>
         )}
-        
+
         {/* Player List */}
         <div className="space-y-2">
           {!teamDetails ? (
@@ -189,7 +193,6 @@ export default function Teams() {
           ) : (
             <div className="space-y-1">
               {teamDetails.members
-                .filter(member => member.role === 'Player')
                 .map((player) => (
                   <div
                     key={player.userId}

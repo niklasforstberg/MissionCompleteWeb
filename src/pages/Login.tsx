@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authApi } from '../api/auth';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function Login() {
   console.log('Rendering Login page');
@@ -9,14 +10,16 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const queryClient = useQueryClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     
     try {
-      const { token } = await authApi.login({ email, password });
+      const { token, user } = await authApi.login({ email, password });
       localStorage.setItem('jwt', token);
+      queryClient.invalidateQueries({ queryKey: ['me'] });
       navigate('/');
     } catch (err) {
       setError('Invalid email or password');

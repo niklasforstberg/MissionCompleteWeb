@@ -25,7 +25,7 @@ const queryClient = new QueryClient({
 // Create a wrapper component that uses the auth hook
 function AppRoutes() {
   const { user } = useAuth();
-  const isPlayer = user?.role === 'Player';
+  const isStaff = user?.role === 'Coach' || user?.role === 'Admin';
 
   return (
     <BrowserRouter>
@@ -42,7 +42,7 @@ function AppRoutes() {
           }
         >
           <Route index element={<Dashboard />} />
-          {!isPlayer && (
+          {isStaff && (
             <>
               <Route path="teams" element={<Teams />} />
               <Route path="challenges" element={<Challenges />} />

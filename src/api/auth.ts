@@ -9,7 +9,10 @@ export const authApi = {
   
   login: async (credentials: { email: string; password: string }) => {
     const response = await apiClient.post('/auth/login', credentials);
-    return response.data;
+    return {
+      token: response.data.token,
+      user: response.data.user // Assuming the API returns user data with the token
+    };
   },
 
   register: async (data: { 

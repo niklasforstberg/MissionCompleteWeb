@@ -1,11 +1,15 @@
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import { FaUser } from 'react-icons/fa'; // You'll need to install react-icons
+import { FaUser } from 'react-icons/fa'; 
+import { useAuth } from '../hooks/useAuth';
 
 export default function Layout() {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
+  const isStaff = user?.role === 'Coach' || user?.role === 'Admin';
+  console.log('User role:', user?.role, 'isStaff:', isStaff);
   
   const handleLogout = () => {
     localStorage.removeItem('jwt');
@@ -36,18 +40,22 @@ export default function Layout() {
             >
               Dashboard
             </Link>
-            <Link 
-              to="/teams" 
-              className="text-off-white hover:text-vibrant-purple/90 transition-colors font-medium"
-            >
-              Teams
-            </Link>
-            <Link 
-              to="/challenges" 
-              className="text-off-white hover:text-vibrant-purple/90 transition-colors font-medium"
-            >
-              Challenges
-            </Link>
+            {isStaff && (
+              <>
+                <Link 
+                  to="/teams" 
+                  className="text-off-white hover:text-vibrant-purple/90 transition-colors font-medium"
+                >
+                  Teams
+                </Link>
+                <Link 
+                  to="/challenges" 
+                  className="text-off-white hover:text-vibrant-purple/90 transition-colors font-medium"
+                >
+                  Challenges
+                </Link>
+              </>
+            )}
           </div>
           <div className="relative" ref={menuRef}>
             <button 
