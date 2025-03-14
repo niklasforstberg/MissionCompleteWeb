@@ -21,13 +21,12 @@ export default function Welcome() {
     }
 
     try {
-      localStorage.setItem('jwt', token!);
-      
-      await authApi.setInitialPassword({
+      const { token: newToken } = await authApi.setInitialPassword({
         token: token!,
         password,
       });
       
+      localStorage.setItem('jwt', newToken);
       navigate('/');
     } catch (err) {
       setError('Invalid or expired invitation link');
