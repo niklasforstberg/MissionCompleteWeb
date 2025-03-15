@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Layout from './components/Layout';
-import Dashboard from './pages/Dashboard.tsx';
+import Dashboard from './pages/dashboard';
 import Teams from './pages/Teams.tsx';
 import Challenges from './pages/Challenges.tsx';
 import Login from './pages/Login';

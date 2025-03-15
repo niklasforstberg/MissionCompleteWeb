@@ -7,8 +7,8 @@ export default function Layout() {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const { user } = useAuth();
-  const isStaff = user?.role === 'Coach' || user?.role === 'Admin';
+  const { user, isCoach, isAdmin } = useAuth();
+  const isStaff = isCoach || isAdmin;
   console.log('User role:', user?.role, 'isStaff:', isStaff);
   
   const handleLogout = () => {

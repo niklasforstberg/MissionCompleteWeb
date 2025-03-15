@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import { useCurrentUser } from '../hooks/useCurrentUser';
+import { useAuth } from '../hooks/useAuth';
 
 export default function Account() {
   const navigate = useNavigate();
-  const { data: user, isLoading, isError } = useCurrentUser();
+  const { user, isLoading, error } = useAuth();
 
   const handleLogout = () => {
     localStorage.removeItem('jwt');
@@ -11,7 +11,7 @@ export default function Account() {
   };
 
   if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error loading user data</div>;
+  if (error) return <div>Error loading user data</div>;
   if (!user) return null;
 
   return (
@@ -25,12 +25,14 @@ export default function Account() {
           </div>
           <div>
             <label className="text-sm text-gray-600">Role</label>
-            <p className="font-medium">{user.role}</p>
+            <p className="font-medium capitalize">{user.role.toLowerCase()}</p>
           </div>
-          <div>
-            <label className="text-sm text-gray-600">Member Since</label>
-            <p className="font-medium">{new Date(user.createdAt).toLocaleDateString()}</p>
-          </div>
+          {user.createdAt && (
+            <div>
+              <label className="text-sm text-gray-600">Member Since</label>
+              <p className="font-medium">{new Date(user.createdAt).toLocaleDateString()}</p>
+            </div>
+          )}
         </div>
         <button
           onClick={handleLogout}

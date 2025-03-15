@@ -1,16 +1,28 @@
 import { useQuery } from '@tanstack/react-query';
-import { authApi } from '../api/auth';
+import { usersApi } from '../api/users';
+import type { User } from '../types/user';
 
 export function useAuth() {
-  const { data: user } = useQuery({
-    queryKey: ['me'],
-    queryFn: () => authApi.getCurrentUser(),
-    // Don't try to fetch if no token exists
+  const { 
+    data: user, 
+    isLoading,
+    error 
+  } = useQuery<User>({
+    queryKey: ['currentUser'],
+    queryFn: () => usersApi.getCurrentUser(),
     enabled: !!localStorage.getItem('jwt'),
-    // Don't show error if not logged in
     retry: false,
-    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    staleTime: 5 * 60 * 1000,
   });
 
-  return { user, isAuthenticated: !!user };
+  return { 
+    user,
+    isLoading,
+    error,
+    isAuthenticated: !!user,
+    role: user?.role,
+    isPlayer: user?.role === 'Player',
+    isCoach: user?.role === 'Coach',
+    isAdmin: user?.role === 'Admin',
+  };
 } 
